@@ -1,5 +1,5 @@
 """
-Path: infrastructure/pymsql.py
+Path: infrastructure/pymsql/my_sql_dashboard_repository.py
 """
 
 import os
@@ -14,10 +14,10 @@ class MySQLDashboardRepository(DashboardRepository):
     "Repositorio MySQL para Dashboard"
     def __init__(self):
         self.conn = pymysql.connect(
-			host=os.getenv("MYSQL_HOST", "localhost"),
-			user=os.getenv("MYSQL_USER", "root"),
-			password=os.getenv("MYSQL_PASSWORD", ""),
-			db=os.getenv("MYSQL_DB", "datamaq"),
+			host=os.getenv("MYSQL_HOST"),
+			user=os.getenv("MYSQL_USER"),
+			password=os.getenv("MYSQL_PASSWORD"),
+			db=os.getenv("MYSQL_DB"),
 			charset='utf8mb4',
 			cursorclass=pymysql.cursors.DictCursor
 		)
