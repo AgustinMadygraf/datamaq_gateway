@@ -47,7 +47,7 @@ async def favicon():
 
 # Ruta principal y /index.html que sirven el HTML
 @app.get("/", response_class=HTMLResponse)
-@app.get("/", response_class=HTMLResponse)
+@app.post("/", response_class=HTMLResponse)
 @app.get("/index.html", response_class=HTMLResponse)
 @app.post("/index.html", response_class=HTMLResponse)
 async def read_root():
