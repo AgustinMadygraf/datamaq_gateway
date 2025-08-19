@@ -43,6 +43,27 @@ def present(output: GetDashboardDataOutput) -> DashboardResponse:
     ls_periodos = {"semana": 604800, "turno": 28800, "hora": 7200}
     menos_periodo = {"semana": "turno", "turno": "hora", "hora": "hora"}
     gradient = [350, 340, 330, 320]
+    formato = None
+    if output.formato:
+        # Ajusta el nombre del campo si es necesario (ancho_bobina_mm o ancho_bobina)
+        ancho = getattr(output.formato, "ancho_bobina_mm", None)
+        if ancho is None:
+            ancho = getattr(output.formato, "ancho_bobina", None)
+        formato = FormatoLegacyModel(
+            formato=output.formato.formato,
+            ancho_bobina=(
+                f"{ancho:.2f} mm" if ancho is not None else ""
+            ),
+        )
+
+    raw_models = [
+        DashboardPointLegacyModel(
+            unixtime=p.unixtime,
+            HR_COUNTER1=str(p.hr_counter1 if p.hr_counter1 is not None else 0),
+            HR_COUNTER2=str(p.hr_counter2 if p.hr_counter2 is not None else 0),
+        ) for p in output.rawdata
+    ]
+
     ui_data = {
         "class": [1, 0, 0],
         "refClass": ["presado", "presione", "presione"],
@@ -57,25 +78,6 @@ def present(output: GetDashboardDataOutput) -> DashboardResponse:
         )
     }
 
-    raw_models = [
-        DashboardPointLegacyModel(
-            unixtime=p.unixtime,
-            HR_COUNTER1=str(p.hr_counter1 if p.hr_counter1 is not None else 0),
-            HR_COUNTER2=str(p.hr_counter2 if p.hr_counter2 is not None else 0),
-        ) for p in output.rawdata
-    ]
-
-    formato = None
-    if output.formato:
-        formato = FormatoLegacyModel(
-            formato=output.formato.formato,
-            ancho_bobina=(
-                f"{output.formato.ancho_bobina_mm:.2f} mm"
-                if output.formato.ancho_bobina_mm
-                else None
-            ),
-        )
-
     data = {
         "periodo": output.periodo,
         "ls_periodos": ls_periodos,
@@ -85,7 +87,7 @@ def present(output: GetDashboardDataOutput) -> DashboardResponse:
         "vel_ult_calculada": str(output.vel_ult),
         "unixtime": output.unixtime,
         "gradient": gradient,
-        "formatoData": formato.dict() if formato else None,
+        "formatoData": formato.dict() if formato else {"formato": "", "ancho_bobina": ""},
         "uiData": ui_data,
     }
 

@@ -59,7 +59,8 @@ class MySQLFormatoRepository(FormatoRepository):
             cursorclass=pymysql.cursors.DictCursor
         )
 
-        def get_ultimo_formato(self) -> Optional[Formato]:
+        def _get_ultimo_formato(self) -> Optional[Formato]:
+            "Obtiene el último formato"
             with self.conn.cursor() as cursor:
                 cursor.execute(
                     "SELECT id_formato, formato, ancho_bobina_mm "

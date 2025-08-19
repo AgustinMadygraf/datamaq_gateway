@@ -47,13 +47,15 @@ async def favicon():
         status_code=result["status_code"]
     )
 
-# Ruta principal que sirve el HTML
+# Ruta principal y /index.html que sirven el HTML
 @app.get("/", response_class=HTMLResponse)
+@app.post("/", response_class=HTMLResponse)
+@app.get("/index.html", response_class=HTMLResponse)
+@app.post("/index.html", response_class=HTMLResponse)
 async def read_root():
-    "Ruta principal que sirve el HTML"
+    "Ruta para el index.html"
     with open(os.path.join(static_path, "index.html"), "r", encoding="utf-8") as f:
         html_content = f.read()
-
     # Corregir las rutas en el HTML
     html_content = html_content.replace(
         'src="src/infrastructure/', 'src="/src/infrastructure/'
@@ -62,9 +64,10 @@ async def read_root():
     ).replace(
         'src="src/adapters/', 'src="/src/adapters/'
     )
-
     return HTMLResponse(content=html_content)
 
+# Ruta para manejar otras páginas de la SPA (Single Page Application)
+@app.get("/{path:path}", response_class=HTMLResponse)
 # Ruta para manejar otras páginas de la SPA (Single Page Application)
 @app.get("/{path:path}", response_class=HTMLResponse)
 async def serve_spa(path: str):
@@ -74,11 +77,9 @@ async def serve_spa(path: str):
     elif os.path.exists(os.path.join(static_path, "src", path)):
         return FileResponse(os.path.join(static_path, "src", path))
     else:
-        # Si no existe, servir index.html (para SPA)
+        # Si no existe el archivo, servir el index.html
         with open(os.path.join(static_path, "index.html"), "r", encoding="utf-8") as f:
             html_content = f.read()
-
-        # Corregir las rutas en el HTML
         html_content = html_content.replace(
             'src="src/infrastructure/', 'src="/src/infrastructure/'
         ).replace(
@@ -86,5 +87,4 @@ async def serve_spa(path: str):
         ).replace(
             'src="src/adapters/', 'src="/src/adapters/'
         )
-
         return HTMLResponse(content=html_content)

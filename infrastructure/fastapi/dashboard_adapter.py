@@ -14,8 +14,12 @@ router = APIRouter(tags=["dashboard"])
 @router.get("/dashboard.php")
 def dashboard_endpoint(
     periodo: Periodo = Query("semana", regex="^(semana|turno|hora)$"),
-    conta: Optional[int] = Query(None, description="timestamp de referencia en ms"),
+    conta: Optional[str] = Query(None, description="timestamp de referencia en ms"),
 ):
     "Adaptador HTTP para get_dashboard"
     dash_repo, formato_repo = get_dashboard_gateways()
-    return get_dashboard(periodo, conta, dash_repo, formato_repo)
+    conta_int = None
+    if conta is not None:
+        # Reemplaza comas y puntos, luego convierte a entero
+        conta_int = int(conta.replace('.', '').replace(',', ''))
+    return get_dashboard(periodo, conta_int, dash_repo, formato_repo)
