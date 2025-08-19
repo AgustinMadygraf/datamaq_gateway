@@ -12,7 +12,7 @@ from interface_adapters.controllers.dashboard_controller import get_dashboard
 
 router = APIRouter(tags=["dashboard"])
 
-@router.get("/dashboard", response_model=DashboardResponse)
+@router.get("/dashboard.php", response_model=DashboardResponse)
 def dashboard_endpoint(
     periodo: Periodo = Query("semana", regex="^(semana|turno|hora)$"),
     conta: Optional[int] = Query(None, description="timestamp de referencia en ms"),
