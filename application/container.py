@@ -10,8 +10,8 @@ from interface_adapters.gateway.repositories import (
     InMemoryDashboardRepository,
     InMemoryFormatoRepository,
 )
-from infrastructure.pymsql.my_sql_dashboard_repository import MySQLDashboardRepository
-from infrastructure.pymsql.my_sql_formato_repository import MySQLFormatoRepository
+from infrastructure.pymsql.pymysql_dashboard import MySQLDashboardRepository
+from infrastructure.pymsql.pymysql_formato import MySQLFormatoRepository
 
 def get_dashboard_gateways():
     "Retorna los gateways para dashboard y formato según configuración"

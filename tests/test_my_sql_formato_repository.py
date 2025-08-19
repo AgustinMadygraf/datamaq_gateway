@@ -9,7 +9,7 @@ import os
 from unittest.mock import patch, MagicMock
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from infrastructure.pymsql.my_sql_formato_repository import MySQLFormatoRepository
+from infrastructure.pymsql.pymysql_formato import MySQLFormatoRepository
 from entities.formato import Formato
 
 @patch("infrastructure.pymsql.my_sql_formato_repository.pymysql.connect")
