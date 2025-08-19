@@ -4,6 +4,7 @@ Path: infrastructure/fastapi/dashboard_adapter.py
 
 from typing import Optional
 from fastapi import APIRouter, Query, Depends
+
 from application.container import resolve_get_dashboard_data
 from use_cases.get_dashboard_data import Periodo
 from interface_adapters.presenters.dashboard_presenter import DashboardResponse

@@ -34,13 +34,15 @@ def health():
 def root():
     "Página de bienvenida servida desde archivo estático"
     result = get_index_html()
-    return HTMLResponse(content=result["content"], media_type=result["mime_type"], status_code=result["status_code"])
+    return HTMLResponse(content=result["content"],
+                        media_type=result["mime_type"], status_code=result["status_code"])
 
 @app.get("/favicon.ico", include_in_schema=False)
 def favicon():
     "Retorna el favicon"
     result = get_favicon()
-    return HTMLResponse(content=result["content"], media_type=result["mime_type"], status_code=result["status_code"])
+    return HTMLResponse(content=result["content"],
+                        media_type=result["mime_type"], status_code=result["status_code"])
 
 @app.get("/test/db-connection")
 def test_db_connection_endpoint():
