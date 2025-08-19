@@ -29,8 +29,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Monta la carpeta de archivos estáticos en /public
-app.mount("/public", StaticFiles(directory=get_static_path()), name="static")
+# Monta la carpeta de archivos estáticos en la raíz
+app.mount("/", StaticFiles(directory=get_static_path(), html=True), name="static")
 
 app.include_router(dashboard_router, prefix="/api")
 
