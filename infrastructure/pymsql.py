@@ -1,10 +1,11 @@
 """
-Path: interface_adapters/gateway/mysql_gateway.py
+Path: infrastructure/pymsql.py
 """
 
 import os
 from typing import Optional, Sequence
 import pymysql
+
 from entities.dashboard_point import DashboardPoint
 from entities.formato import Formato
 from interface_adapters.gateway.repositories import DashboardRepository, FormatoRepository
