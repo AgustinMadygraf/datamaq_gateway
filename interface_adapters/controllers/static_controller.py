@@ -10,7 +10,7 @@ from shared.config import get_static_path
 
 def get_index_html():
     "Obtiene el archivo index.html"
-    index_path = os.path.join(get_static_path(), "datam.html")
+    index_path = os.path.join(get_static_path(), "index.html")
     content = get_file(index_path)
     if content is not None:
         return present_static_file(content, "text/html")
