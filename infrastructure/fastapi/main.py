@@ -1,17 +1,18 @@
 """
 Path: infrastructure/fastapi/main.py
+Corrección para manejo adecuado de archivos estáticos
 """
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-# from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse, HTMLResponse
+import os
 
 from infrastructure.fastapi.dashboard_adapter import router as dashboard_router
 from interface_adapters.controllers.static_controller import get_favicon
-
-# from shared.config import get_static_path
+from shared.config import get_static_path
 
 load_dotenv()
 app = FastAPI(title="DataMaq Gateway", version="0.1.0")
@@ -24,14 +25,63 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Monta la carpeta de archivos estáticos en la raíz
-# app.mount("/", StaticFiles(directory=get_static_path(), html=True), name="static")
+# Obtener la ruta de archivos estáticos
+static_path = get_static_path()
 
+# Servir archivos estáticos con configuración adecuada
+app.mount("/public", StaticFiles(directory=os.path.join(static_path, "public")), name="public")
+app.mount("/src", StaticFiles(directory=os.path.join(static_path, "src")), name="src")
+
+# Incluir el router de la API
 app.include_router(dashboard_router, prefix="/datamaq_php/backend/api")
 
+# Ruta para el favicon
 @app.get("/favicon.ico", include_in_schema=False)
-def favicon():
-    "Retorna el favicon"
+async def favicon():
     result = get_favicon()
-    return HTMLResponse(content=result["content"],
-                        media_type=result["mime_type"], status_code=result["status_code"])
+    return HTMLResponse(
+        content=result["content"],
+        media_type=result["mime_type"],
+        status_code=result["status_code"]
+    )
+
+# Ruta principal que sirve el HTML
+@app.get("/", response_class=HTMLResponse)
+async def read_root():
+    with open(os.path.join(static_path, "index.html"), "r", encoding="utf-8") as f:
+        html_content = f.read()
+    
+    # Corregir las rutas en el HTML
+    html_content = html_content.replace(
+        'src="src/infrastructure/', 'src="/src/infrastructure/'
+    ).replace(
+        'href="public/assets/', 'href="/public/assets/'
+    ).replace(
+        'src="src/adapters/', 'src="/src/adapters/'
+    )
+    
+    return HTMLResponse(content=html_content)
+
+# Ruta para manejar otras páginas de la SPA (Single Page Application)
+@app.get("/{path:path}", response_class=HTMLResponse)
+async def serve_spa(path: str):
+    # Verificar si el archivo existe en las carpetas estáticas
+    if os.path.exists(os.path.join(static_path, "public", path)):
+        return FileResponse(os.path.join(static_path, "public", path))
+    elif os.path.exists(os.path.join(static_path, "src", path)):
+        return FileResponse(os.path.join(static_path, "src", path))
+    else:
+        # Si no existe, servir index.html (para SPA)
+        with open(os.path.join(static_path, "index.html"), "r", encoding="utf-8") as f:
+            html_content = f.read()
+        
+        # Corregir las rutas en el HTML
+        html_content = html_content.replace(
+            'src="src/infrastructure/', 'src="/src/infrastructure/'
+        ).replace(
+            'href="public/assets/', 'href="/public/assets/'
+        ).replace(
+            'src="src/adapters/', 'src="/src/adapters/'
+        )
+        
+        return HTMLResponse(content=html_content)
