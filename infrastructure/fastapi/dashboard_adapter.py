@@ -6,8 +6,7 @@ from typing import Optional
 from fastapi import APIRouter, Query, Depends
 
 from application.container import resolve_get_dashboard_data
-from use_cases.get_dashboard_data import Periodo
-from interface_adapters.controllers.dashboard_controller import get_dashboard
+from interface_adapters.controllers.dashboard_controller import get_dashboard, Periodo
 
 router = APIRouter(tags=["dashboard"])
 

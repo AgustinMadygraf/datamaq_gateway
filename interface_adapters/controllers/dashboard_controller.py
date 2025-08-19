@@ -9,3 +9,6 @@ def get_dashboard(periodo: Periodo, conta: int, uc) -> dict:
     "Ejecutar caso de uso para obtener datos del dashboard"
     out = uc.execute(GetDashboardDataInput(periodo=periodo, conta_ms=conta))
     return present(out)
+
+# Expongo el tipo Periodo para uso en infraestructura
+__all__ = ["get_dashboard", "Periodo"]
