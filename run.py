@@ -7,7 +7,7 @@ from fastapi.responses import HTMLResponse, FileResponse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from interface_adapters.controllers.dashboard_controller import router as dashboard_router
+from infrastructure.fastapi.dashboard_adapter import router as dashboard_router
 
 app = FastAPI(title="DataMaq Gateway", version="0.1.0")
 
