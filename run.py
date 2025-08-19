@@ -28,8 +28,11 @@ def health():
 
 @app.get("/")
 def root():
-    "Página de bienvenida"
-    return {"msg": "welcome"}
+    "Página de bienvenida servida desde archivo estático"
+    index_path = os.path.join(os.path.dirname(__file__), "static/index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path, media_type="text/html")
+    return HTMLResponse(content="Archivo index.html no encontrado", status_code=404)
 
 @app.get("/favicon.ico", include_in_schema=False)
 def favicon():
