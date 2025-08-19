@@ -7,8 +7,6 @@ from typing import Protocol, Sequence, Optional, List
 from entities.dashboard_point import DashboardPoint
 from entities.formato import Formato
 
-# pylint: disable=missing-class-docstring,missing-function-docstring,too-few-public-methods,abstract-method
-
 class DashboardRepository(Protocol):
     "Interfaz para el acceso a datos del dashboard."
     def get_last_point(self) -> Optional[DashboardPoint]:

@@ -3,12 +3,13 @@ Path: infrastructure/fastapi/main.py
 Corrección para manejo adecuado de archivos estáticos
 """
 
+import os
 from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, HTMLResponse
-import os
+
 
 from infrastructure.fastapi.dashboard_adapter import router as dashboard_router
 from interface_adapters.controllers.static_controller import get_favicon
@@ -38,6 +39,7 @@ app.include_router(dashboard_router, prefix="/datamaq_php/backend/api")
 # Ruta para el favicon
 @app.get("/favicon.ico", include_in_schema=False)
 async def favicon():
+    "Ruta para el favicon"
     result = get_favicon()
     return HTMLResponse(
         content=result["content"],
@@ -48,9 +50,10 @@ async def favicon():
 # Ruta principal que sirve el HTML
 @app.get("/", response_class=HTMLResponse)
 async def read_root():
+    "Ruta principal que sirve el HTML"
     with open(os.path.join(static_path, "index.html"), "r", encoding="utf-8") as f:
         html_content = f.read()
-    
+
     # Corregir las rutas en el HTML
     html_content = html_content.replace(
         'src="src/infrastructure/', 'src="/src/infrastructure/'
@@ -59,13 +62,13 @@ async def read_root():
     ).replace(
         'src="src/adapters/', 'src="/src/adapters/'
     )
-    
+
     return HTMLResponse(content=html_content)
 
 # Ruta para manejar otras páginas de la SPA (Single Page Application)
 @app.get("/{path:path}", response_class=HTMLResponse)
 async def serve_spa(path: str):
-    # Verificar si el archivo existe en las carpetas estáticas
+    "Ruta para manejar otras páginas de la SPA (Single Page Application)"
     if os.path.exists(os.path.join(static_path, "public", path)):
         return FileResponse(os.path.join(static_path, "public", path))
     elif os.path.exists(os.path.join(static_path, "src", path)):
@@ -74,7 +77,7 @@ async def serve_spa(path: str):
         # Si no existe, servir index.html (para SPA)
         with open(os.path.join(static_path, "index.html"), "r", encoding="utf-8") as f:
             html_content = f.read()
-        
+
         # Corregir las rutas en el HTML
         html_content = html_content.replace(
             'src="src/infrastructure/', 'src="/src/infrastructure/'
@@ -83,5 +86,5 @@ async def serve_spa(path: str):
         ).replace(
             'src="src/adapters/', 'src="/src/adapters/'
         )
-        
+
         return HTMLResponse(content=html_content)
