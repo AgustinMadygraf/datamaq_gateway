@@ -27,7 +27,7 @@ app.add_middleware(
 # Monta la carpeta de archivos estáticos en la raíz
 # app.mount("/", StaticFiles(directory=get_static_path(), html=True), name="static")
 
-app.include_router(dashboard_router, prefix="/datamaq_php/backend")
+app.include_router(dashboard_router, prefix="/datamaq_php/backend/api")
 
 @app.get("/favicon.ico", include_in_schema=False)
 def favicon():
