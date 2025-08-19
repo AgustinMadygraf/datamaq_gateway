@@ -3,6 +3,8 @@ Path: shared/config.py
 """
 
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 def get_env(var_name, default=None):
     "Obtiene una variable de entorno"

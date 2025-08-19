@@ -4,7 +4,6 @@ Corrección para manejo adecuado de archivos estáticos
 """
 
 import os
-from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -15,7 +14,6 @@ from infrastructure.fastapi.dashboard_adapter import router as dashboard_router
 from interface_adapters.controllers.static_controller import get_favicon
 from shared.config import get_static_path
 
-load_dotenv()
 app = FastAPI(title="DataMaq Gateway", version="0.1.0")
 
 app.add_middleware(
@@ -26,12 +24,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Obtener la ruta de archivos estáticos
 static_path = get_static_path()
+public_dir = os.path.join(static_path, "public")
+src_dir = os.path.join(static_path, "src")
 
-# Servir archivos estáticos con configuración adecuada
-app.mount("/public", StaticFiles(directory=os.path.join(static_path, "public")), name="public")
-app.mount("/src", StaticFiles(directory=os.path.join(static_path, "src")), name="src")
+app.mount("/public", StaticFiles(directory=public_dir), name="public")
+app.mount("/src", StaticFiles(directory=src_dir), name="src")
 
 # Incluir el router de la API
 app.include_router(dashboard_router, prefix="/datamaq_php/backend/api")
@@ -49,7 +47,7 @@ async def favicon():
 
 # Ruta principal y /index.html que sirven el HTML
 @app.get("/", response_class=HTMLResponse)
-@app.post("/", response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 @app.get("/index.html", response_class=HTMLResponse)
 @app.post("/index.html", response_class=HTMLResponse)
 async def read_root():
