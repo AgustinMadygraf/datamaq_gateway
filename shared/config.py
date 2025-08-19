@@ -26,5 +26,3 @@ def get_use_db():
 def get_static_path():
     "Obtiene la ruta base de archivos estáticos"
     return get_env("STATIC_PATH", "static")
-
-

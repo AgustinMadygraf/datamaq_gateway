@@ -28,11 +28,13 @@ class DashboardResponse(BaseModel):
     formato: Optional[FormatoModel] = None
 
 class DashboardPointLegacyModel(BaseModel):
+    "Modelo para un punto del dashboard en formato legacy"
     unixtime: int
     HR_COUNTER1: str
     HR_COUNTER2: str
 
 class FormatoLegacyModel(BaseModel):
+    "Modelo para el formato del dashboard en formato legacy"
     formato: Optional[str] = None
     ancho_bobina: Optional[str] = None
 
@@ -41,12 +43,18 @@ def present(output: GetDashboardDataOutput) -> DashboardResponse:
     ls_periodos = {"semana": 604800, "turno": 28800, "hora": 7200}
     menos_periodo = {"semana": "turno", "turno": "hora", "hora": "hora"}
     gradient = [350, 340, 330, 320]
-    uiData = {
+    ui_data = {
         "class": [1, 0, 0],
         "refClass": ["presado", "presione", "presione"],
         "preConta": 1708010400000,
         "postConta": 1709220000000,
-        "estiloFondo": "background: linear-gradient(195deg, rgba(107,170,34,0.9) 320%, rgba(255,164,1,0.9) 330%, rgba(234,53,34,0.9) 340%, rgba(100,10,5,0.9) 350%);"
+        "estiloFondo": (
+            "background: linear-gradient(195deg, "
+            "rgba(107,170,34,0.9) 320%, "
+            "rgba(255,164,1,0.9) 330%, "
+            "rgba(234,53,34,0.9) 340%, "
+            "rgba(100,10,5,0.9) 350%);"
+        )
     }
 
     raw_models = [
@@ -61,7 +69,11 @@ def present(output: GetDashboardDataOutput) -> DashboardResponse:
     if output.formato:
         formato = FormatoLegacyModel(
             formato=output.formato.formato,
-            ancho_bobina=f"{output.formato.ancho_bobina_mm:.2f} mm" if output.formato.ancho_bobina_mm else None,
+            ancho_bobina=(
+                f"{output.formato.ancho_bobina_mm:.2f} mm"
+                if output.formato.ancho_bobina_mm
+                else None
+            ),
         )
 
     data = {
@@ -74,7 +86,7 @@ def present(output: GetDashboardDataOutput) -> DashboardResponse:
         "unixtime": output.unixtime,
         "gradient": gradient,
         "formatoData": formato.dict() if formato else None,
-        "uiData": uiData,
+        "uiData": ui_data,
     }
 
     return {
@@ -88,12 +100,18 @@ def present_legacy(output: GetDashboardDataOutput) -> Dict[str, Any]:
     ls_periodos = {"semana": 604800, "turno": 28800, "hora": 7200}
     menos_periodo = {"semana": "turno", "turno": "hora", "hora": "hora"}
     gradient = [350, 340, 330, 320]
-    uiData = {
+    ui_data = {
         "class": [1, 0, 0],
         "refClass": ["presado", "presione", "presione"],
         "preConta": 1708010400000,
         "postConta": 1709220000000,
-        "estiloFondo": "background: linear-gradient(195deg, rgba(107,170,34,0.9) 320%, rgba(255,164,1,0.9) 330%, rgba(234,53,34,0.9) 340%, rgba(100,10,5,0.9) 350%);"
+        "estiloFondo": (
+            "background: linear-gradient(195deg, "
+            "rgba(107,170,34,0.9) 320%, "
+            "rgba(255,164,1,0.9) 330%, "
+            "rgba(234,53,34,0.9) 340%, "
+            "rgba(100,10,5,0.9) 350%);"
+        )
     }
 
     raw_models = [
@@ -108,7 +126,11 @@ def present_legacy(output: GetDashboardDataOutput) -> Dict[str, Any]:
     if output.formato:
         formato = FormatoLegacyModel(
             formato=output.formato.formato,
-            ancho_bobina=f"{output.formato.ancho_bobina_mm:.2f} mm" if output.formato.ancho_bobina_mm else None,
+            ancho_bobina=(
+            f"{output.formato.ancho_bobina_mm:.2f} mm"
+            if output.formato.ancho_bobina_mm is not None
+            else None
+            ),
         )
 
     data = {
@@ -121,7 +143,7 @@ def present_legacy(output: GetDashboardDataOutput) -> Dict[str, Any]:
         "unixtime": output.unixtime,
         "gradient": gradient,
         "formatoData": formato.dict() if formato else None,
-        "uiData": uiData,
+        "uiData": ui_data,
     }
 
     return {
