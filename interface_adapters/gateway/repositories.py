@@ -3,6 +3,7 @@ Path: interface_adapters/gateways/repositories.py
 """
 
 from typing import Protocol, Sequence, Optional, List
+
 from entities.dashboard_point import DashboardPoint
 from entities.formato import Formato
 

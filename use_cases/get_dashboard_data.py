@@ -4,6 +4,7 @@ Path: uses_cases/get_dashboard_data.py
 
 from dataclasses import dataclass
 from typing import List, Optional, Literal
+
 from entities.dashboard_point import DashboardPoint
 from entities.formato import Formato
 from interface_adapters.gateway.repositories import DashboardRepository, FormatoRepository

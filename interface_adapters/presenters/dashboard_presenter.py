@@ -10,8 +10,8 @@ from use_cases.get_dashboard_data import GetDashboardDataOutput
 class DashboardPointModel(BaseModel):
     "Modelo para un punto del dashboard"
     unixtime: int
-    HR_COUNTER1: int
-    HR_COUNTER2: Optional[int] = None
+    hr_counter1: int
+    hr_counter2: Optional[int] = None
 
 class FormatoModel(BaseModel):
     "Modelo para el formato del dashboard"
@@ -32,8 +32,8 @@ def present(output: GetDashboardDataOutput) -> DashboardResponse:
     raw_models = [
         DashboardPointModel(
             unixtime=p.unixtime,
-            HR_COUNTER1=p.hr_counter1,
-            HR_COUNTER2=p.hr_counter2,
+            hr_counter1=p.hr_counter1,
+            hr_counter2=p.hr_counter2,
         ) for p in output.rawdata
     ]
     fmt = None
