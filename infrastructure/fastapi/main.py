@@ -1,15 +1,16 @@
 """
-FastAPI app definition and endpoints for DataMaq Gateway
+Path: infrastructure/fastapi/main.py
 """
 
-import os
-import pymysql
 from dotenv import load_dotenv
-from fastapi.responses import HTMLResponse, FileResponse
+from fastapi.responses import HTMLResponse
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from infrastructure.fastapi.dashboard_adapter import router as dashboard_router
+from interface_adapters.controllers.health_controller import get_health
+from interface_adapters.controllers.db_connection_controller import test_db_connection
+from interface_adapters.controllers.static_controller import get_index_html, get_favicon
 
 load_dotenv()
 app = FastAPI(title="DataMaq Gateway", version="0.1.0")
@@ -26,44 +27,22 @@ app.include_router(dashboard_router, prefix="/api")
 
 @app.get("/health")
 def health():
-    " Health check"
-    return {"status": "ok"}
+    "Verifica el estado de la API"
+    return get_health()
 
 @app.get("/")
 def root():
     "Página de bienvenida servida desde archivo estático"
-    index_path = os.path.join(os.path.dirname(__file__), "../../static/index.html")
-    if os.path.exists(index_path):
-        return FileResponse(index_path, media_type="text/html")
-    return HTMLResponse(content="Archivo index.html no encontrado", status_code=404)
+    result = get_index_html()
+    return HTMLResponse(content=result["content"], media_type=result["mime_type"], status_code=result["status_code"])
 
 @app.get("/favicon.ico", include_in_schema=False)
 def favicon():
     "Retorna el favicon"
-    favicon_path = os.path.join(os.path.dirname(__file__), "../../static/favicon.ico")
-    if os.path.exists(favicon_path):
-        return FileResponse(favicon_path)
-    return HTMLResponse(content="", status_code=204)
+    result = get_favicon()
+    return HTMLResponse(content=result["content"], media_type=result["mime_type"], status_code=result["status_code"])
 
 @app.get("/test/db-connection")
-def test_db_connection():
-    "Testea el valor de USE_DB y la conexión a la base de datos si corresponde"
-    use_db = os.environ.get("USE_DB")
-    result = {"USE_DB": use_db}
-    if use_db == "mysql":
-        try:
-            conn = pymysql.connect(
-                host=os.environ.get("MYSQL_HOST"),
-                port=int(os.environ.get("MYSQL_PORT")),
-                user=os.environ.get("MYSQL_USER"),
-                password=os.environ.get("MYSQL_PASSWORD"),
-                database=os.environ.get("MYSQL_DB"),
-                connect_timeout=3
-            )
-            conn.close()
-            result["connection"] = "success"
-        except pymysql.MySQLError as e:
-            result["connection"] = f"error: {str(e)}"
-    else:
-        result["connection"] = "not required (memory mode)"
-    return result
+def test_db_connection_endpoint():
+    "Prueba la conexión a la base de datos"
+    return test_db_connection()
