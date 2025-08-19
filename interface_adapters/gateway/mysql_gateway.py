@@ -25,7 +25,7 @@ class MySQLDashboardRepository(DashboardRepository):
         with self.conn.cursor() as cursor:
             cursor.execute(
                 "SELECT unixtime, hr_counter1, hr_counter2 "
-                "FROM dashboard_points "
+                "FROM intervalproduction "
                 "ORDER BY unixtime DESC "
                 "LIMIT 1"
             )
@@ -37,13 +37,11 @@ class MySQLDashboardRepository(DashboardRepository):
     def get_points_between(self, t1: int, t2: int) -> Sequence[DashboardPoint]:
         with self.conn.cursor() as cursor:
             cursor.execute(
-                (
-                    "SELECT unixtime, hr_counter1, hr_counter2 "
-                    "FROM dashboard_points "
-                    "WHERE unixtime > %s "
-                    "AND unixtime <= %s "
-                    "ORDER BY unixtime ASC"
-                ),
+                "SELECT unixtime, hr_counter1, hr_counter2 "
+                "FROM intervalproduction "
+                "WHERE unixtime > %s "
+                "AND unixtime <= %s "
+                "ORDER BY unixtime ASC",
                 (t1, t2)
             )
             rows = cursor.fetchall()
@@ -61,15 +59,15 @@ class MySQLFormatoRepository(FormatoRepository):
             cursorclass=pymysql.cursors.DictCursor
         )
 
-    def get_ultimo_formato(self) -> Optional[Formato]:
-        with self.conn.cursor() as cursor:
-            cursor.execute(
-                "SELECT id_formato, formato, ancho_bobina_mm "
-                "FROM formatos "
-                "ORDER BY id_formato DESC "
-                "LIMIT 1"
-            )
-            row = cursor.fetchone()
-            if row:
-                return Formato(**row)
-            return None
+        def get_ultimo_formato(self) -> Optional[Formato]:
+            with self.conn.cursor() as cursor:
+                cursor.execute(
+                    "SELECT id_formato, formato, ancho_bobina_mm "
+                    "FROM tabla_1 "
+                    "ORDER BY id_formato DESC "
+                    "LIMIT 1"
+                )
+                row = cursor.fetchone()
+                if row:
+                    return Formato(**row)
+                return None
