@@ -39,6 +39,7 @@ class SQLAlchemyFormatoRepository(FormatoRepository):
                     "LIMIT 1"
                 )
             ).fetchone()
-            if result:
-                return Formato(**dict(result))
-            return None
+            if result is None:
+                print("[ERROR] No se encontró formato en la base de datos.")
+                return None
+            return Formato(**result._mapping)

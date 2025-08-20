@@ -19,7 +19,7 @@ from infrastructure.sql_alchemy.sql_alchemy_formato import SQLAlchemyFormatoRepo
 def get_dashboard_gateways():
     "Retorna los gateways para dashboard y formato según configuración"
     use_db = os.getenv("USE_DB")
-    if use_db == "mysql" and MySQLDashboardRepository and MySQLFormatoRepository:
+    if use_db == "pymysql" and MySQLDashboardRepository and MySQLFormatoRepository:
         dash_repo = MySQLDashboardRepository()
         formato_repo = MySQLFormatoRepository()
     elif use_db == "sqlalchemy" and SQLAlchemyDashboardRepository and SQLAlchemyFormatoRepository:
