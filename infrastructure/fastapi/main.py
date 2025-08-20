@@ -5,14 +5,16 @@ Corrección para manejo adecuado de archivos estáticos
 
 import os
 from fastapi import FastAPI
+from fastapi import HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, HTMLResponse
 
+from shared.config import get_static_path
 
 from infrastructure.fastapi.dashboard_adapter import router as dashboard_router
 from interface_adapters.controllers.static_controller import get_favicon
-from shared.config import get_static_path
+
 
 app = FastAPI(title="DataMaq Gateway", version="0.1.0")
 
@@ -52,17 +54,10 @@ async def favicon():
 @app.post("/index.html", response_class=HTMLResponse)
 async def read_root():
     "Ruta para el index.html"
-    with open(os.path.join(static_path, "index.html"), "r", encoding="utf-8") as f:
+    index_path = os.path.join(static_path, "index.html")
+    with open(index_path, "r", encoding="utf-8") as f:
         html_content = f.read()
-    # Corregir las rutas en el HTML
-    html_content = html_content.replace(
-        'src="src/infrastructure/', 'src="/src/infrastructure/'
-    ).replace(
-        'href="public/assets/', 'href="/public/assets/'
-    ).replace(
-        'src="src/adapters/', 'src="/src/adapters/'
-    )
-    return HTMLResponse(content=html_content)
+        return HTMLResponse(content=html_content)
 
 # Ruta para manejar otras páginas de la SPA (Single Page Application)
 @app.get("/{path:path}", response_class=HTMLResponse)
@@ -70,11 +65,15 @@ async def read_root():
 @app.get("/{path:path}", response_class=HTMLResponse)
 async def serve_spa(path: str):
     "Ruta para manejar otras páginas de la SPA (Single Page Application)"
-    if os.path.exists(os.path.join(static_path, "public", path)):
-        return FileResponse(os.path.join(static_path, "public", path))
-    elif os.path.exists(os.path.join(static_path, "src", path)):
-        return FileResponse(os.path.join(static_path, "src", path))
+    public_file = os.path.join(static_path, "public", path)
+    src_file = os.path.join(static_path, "src", path)
+    if os.path.exists(public_file):
+        return FileResponse(public_file)
+    elif os.path.exists(src_file):
+        return FileResponse(src_file)
     else:
+        if path.endswith('.js'):
+            raise HTTPException(status_code=404, detail="Archivo JS no encontrado")
         # Si no existe el archivo, servir el index.html
         with open(os.path.join(static_path, "index.html"), "r", encoding="utf-8") as f:
             html_content = f.read()
