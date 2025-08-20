@@ -14,8 +14,12 @@ def get_dashboard(
 ) -> dict:
     "Ejecutar caso de uso para obtener datos del dashboard"
     uc = GetDashboardData(dash_repo, formato_repo)
-    out = uc.execute(GetDashboardDataInput(periodo=periodo, conta_ms=conta))
-    return present(out)
+    try:
+        out = uc.execute(GetDashboardDataInput(periodo=periodo, conta_ms=conta))
+        return present(out)
+    except ValueError as e:
+        # Puedes personalizar el formato de error según el presentador
+        return {"error": str(e)}
 
 # Expongo el tipo Periodo para uso en infraestructura
 __all__ = ["get_dashboard", "Periodo"]

@@ -35,13 +35,26 @@ class GetDashboardData:
 
     def execute(self, inp: GetDashboardDataInput) -> GetDashboardDataOutput:
         "Ejecutar caso de uso para obtener datos del dashboard"
+        # Validación de periodo
+        if inp.periodo not in PERIODOS:
+            raise ValueError(f"Periodo inválido: {inp.periodo}. Debe ser uno de {list(PERIODOS.keys())}")
+
         last = self._dash.get_last_point()
         unixtime = last.unixtime if last else 0
         vel_ult = last.hr_counter1 if last else 0
-        if inp.conta_ms and inp.conta_ms <= unixtime * 1000:
-            conta_ms = inp.conta_ms
+
+        # Validación de timestamp
+        if inp.conta_ms is not None:
+            if inp.conta_ms < 0:
+                raise ValueError("El timestamp (conta_ms) no puede ser negativo.")
+            if inp.conta_ms > unixtime * 1000:
+                # Si el timestamp es mayor al último dato, lo ajustamos
+                conta_ms = unixtime * 1000
+            else:
+                conta_ms = inp.conta_ms
         else:
             conta_ms = unixtime * 1000
+
         ventana = PERIODOS[inp.periodo]
         t1 = int(conta_ms / 1000) - ventana
         t2 = int(conta_ms / 1000)

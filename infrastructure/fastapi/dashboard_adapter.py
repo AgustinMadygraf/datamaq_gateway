@@ -11,7 +11,6 @@ from application.container import get_dashboard_gateways
 router = APIRouter(tags=["dashboard"])
 
 @router.get("/dashboard.php")
-@router.get("/dashboard.php")
 def dashboard_endpoint(
     periodo: Periodo = Query("semana", regex="^(semana|turno|hora)$"),
     conta: Optional[str] = Query(None, description="timestamp de referencia en ms"),
