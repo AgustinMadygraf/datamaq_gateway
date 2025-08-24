@@ -13,6 +13,7 @@ from fastapi.responses import FileResponse, HTMLResponse
 from shared.config import get_static_path
 
 from infrastructure.fastapi.dashboard_adapter import router as dashboard_router
+from infrastructure.fastapi.proxy_adapter import router as proxy_router
 from interface_adapters.controllers.static_controller import get_favicon
 
 
@@ -35,6 +36,7 @@ app.mount("/src", StaticFiles(directory=src_dir), name="src")
 
 # Incluir el router de la API
 app.include_router(dashboard_router, prefix="/datamaq_php/backend/api")
+app.include_router(proxy_router)
 
 # Ruta para el favicon
 @app.get("/favicon.ico", include_in_schema=False)
