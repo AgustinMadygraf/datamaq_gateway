@@ -130,10 +130,7 @@ def present(output: GetDashboardDataOutput) -> DashboardResponse:
         "producto": producto
     }
 
-    return {
-        "status": "success",
-        "data": data
-    }
+    return data
 
 def present_legacy(output: GetDashboardDataOutput) -> Dict[str, Any]:
     "Presentar los datos del dashboard en formato legacy"
