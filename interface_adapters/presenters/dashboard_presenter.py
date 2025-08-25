@@ -49,20 +49,11 @@ def present(output: GetDashboardDataOutput) -> DashboardResponse:
             "hr_counter1": p.hr_counter1 if p.hr_counter1 is not None else 0,
             "hr_counter2": p.hr_counter2 if p.hr_counter2 is not None else 0
         })
-    ls_periodos = {"semana": 604800, "turno": 28800, "hora": 7200}
-    menos_periodo = {"semana": "turno", "turno": "hora", "hora": "hora"}
-    formato = None
     if output.formato:
         # Ajusta el nombre del campo si es necesario (ancho_bobina_mm o ancho_bobina)
         ancho = getattr(output.formato, "ancho_bobina_mm", None)
         if ancho is None:
             ancho = getattr(output.formato, "ancho_bobina", None)
-        formato = FormatoLegacyModel(
-            formato=output.formato.formato,
-            ancho_bobina=(
-                f"{ancho:.2f} mm" if ancho is not None else ""
-            ),
-        )
 
     raw_models = [
         DashboardPointLegacyModel(
@@ -132,14 +123,7 @@ def present(output: GetDashboardDataOutput) -> DashboardResponse:
             "fin": fin_iso
         },
         "periodo": output.periodo,
-        "ls_periodos": ls_periodos,
-        "menos_periodo": menos_periodo,
-        "rawdata": rawdata_with_t,
         "series": series,
-        "conta": output.unixtime * 1000,  # ejemplo, ajusta según tu lógica
-        "vel_ult_calculada": str(output.vel_ult),
-        "unixtime": output.unixtime,
-        "formatoData": formato.dict() if formato else {"formato": "", "ancho_bobina": ""},
         "features": {
             "velocidad_ultima_bpm": output.vel_ult
         },
