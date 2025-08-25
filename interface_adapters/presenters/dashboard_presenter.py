@@ -51,7 +51,6 @@ def present(output: GetDashboardDataOutput) -> DashboardResponse:
         })
     ls_periodos = {"semana": 604800, "turno": 28800, "hora": 7200}
     menos_periodo = {"semana": "turno", "turno": "hora", "hora": "hora"}
-    gradient = [350, 340, 330, 320]
     formato = None
     if output.formato:
         # Ajusta el nombre del campo si es necesario (ancho_bobina_mm o ancho_bobina)
@@ -140,9 +139,7 @@ def present(output: GetDashboardDataOutput) -> DashboardResponse:
         "conta": output.unixtime * 1000,  # ejemplo, ajusta según tu lógica
         "vel_ult_calculada": str(output.vel_ult),
         "unixtime": output.unixtime,
-        "gradient": gradient,
         "formatoData": formato.dict() if formato else {"formato": "", "ancho_bobina": ""},
-        "uiData": ui_data,
         "features": {
             "velocidad_ultima_bpm": output.vel_ult
         },
