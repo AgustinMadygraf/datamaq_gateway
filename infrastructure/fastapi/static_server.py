@@ -28,11 +28,10 @@ app.add_middleware(
 )
 
 static_path = get_static_path()
-public_dir = os.path.join(static_path, "public")
-src_dir = os.path.join(static_path, "src")
+public_dir = os.path.join(static_path, "assets")
+print(f"Static path: {static_path}")
 
-app.mount("/public", StaticFiles(directory=public_dir), name="public")
-app.mount("/src", StaticFiles(directory=src_dir), name="src")
+app.mount("/assets", StaticFiles(directory=public_dir), name="assets")
 
 # Incluir el router de la API
 app.include_router(dashboard_router, prefix="/datamaq_php/backend/api")
@@ -79,11 +78,4 @@ async def serve_spa(path: str):
         # Si no existe el archivo, servir el index.html
         with open(os.path.join(static_path, "index.html"), "r", encoding="utf-8") as f:
             html_content = f.read()
-        html_content = html_content.replace(
-            'src="src/infrastructure/', 'src="/src/infrastructure/'
-        ).replace(
-            'href="public/assets/', 'href="/public/assets/'
-        ).replace(
-            'src="src/adapters/', 'src="/src/adapters/'
-        )
         return HTMLResponse(content=html_content)

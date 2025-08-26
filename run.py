@@ -6,14 +6,11 @@ import os
 from shared.config import get_static_path
 
 static_path = get_static_path()
-public_dir = os.path.join(static_path, "public")
-src_dir = os.path.join(static_path, "src")
+public_dir = os.path.join(static_path, "assets")
 
 missing = []
 if not os.path.isdir(public_dir):
     missing.append(public_dir)
-if not os.path.isdir(src_dir):
-    missing.append(src_dir)
 
 if missing:
     print("\n[ERROR] Los siguientes directorios no existen:")
