@@ -3,7 +3,7 @@ Path: interface_adapters/controllers/dashboard_controller.py
 """
 
 from use_cases.get_dashboard_data import GetDashboardData, GetDashboardDataInput, Periodo
-from interface_adapters.presenters.dashboard_presenter import present
+from interface_adapters.presenters.dashboard_presenter_modern import present
 from interface_adapters.gateway.repositories import DashboardRepository, FormatoRepository
 
 def get_dashboard(

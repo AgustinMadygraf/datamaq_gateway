@@ -6,7 +6,7 @@ from typing import Optional
 from fastapi import APIRouter, Query
 
 from interface_adapters.controllers.dashboard_controller import get_dashboard, Periodo
-from interface_adapters.presenters.dashboard_presenter import present
+from interface_adapters.presenters.dashboard_presenter_modern import present
 from application.container import get_dashboard_gateways
 
 
